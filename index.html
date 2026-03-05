@@ -123,12 +123,6 @@
             text-align: center;
         }
 
-        /* Specific adjustment for Builds section */
-        #builds {
-            margin-top: -30px; 
-            padding-top: 0;   
-        }
-
         .about-grid {
             background: var(--surface-color);
             padding: 40px;
@@ -142,42 +136,6 @@
         .highlight {
             color: var(--accent-color);
             font-weight: 600;
-        }
-
-        /* Gallery */
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-item {
-            background-color: var(--surface-color);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #334155;
-            transition: transform 0.2s;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-color);
-        }
-
-        .gallery-img {
-            width: 100%;
-            height: 300px;
-            object-fit: contain;
-            background-color: #0f172a;
-            display: block;
-        }
-
-        .gallery-caption {
-            padding: 16px;
-            font-weight: 600;
-            text-align: center;
-            background-color: var(--surface-color);
-            border-top: 1px solid #334155;
         }
 
         /* Footer */
@@ -213,24 +171,6 @@
             </div>
         </div>
     </header>
-
-    <section id="builds">
-        <h2>Player Builds</h2>
-        <div class="gallery">
-            <div class="gallery-item">
-                <img src="img/2026-03-05_17.15.17.png" alt="The Spawn" class="gallery-img">
-                <div class="gallery-caption">The Spawn</div>
-            </div>
-            <div class="gallery-item">
-                <img src="placeholder2.png" alt="Floating Village Base" class="gallery-img">
-                <div class="gallery-caption">Floating Village Base</div>
-            </div>
-            <div class="gallery-item">
-                <img src="placeholder3.png" alt="Nether Void Outpost" class="gallery-img">
-                <div class="gallery-caption">Nether Void Outpost</div>
-            </div>
-        </div>
-    </section>
 
     <section id="about">
         <h2>About The Server</h2>
