@@ -4,146 +4,142 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THFproject</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #0f172a;
-            --surface-color: #1e293b;
-            --accent-color: #10b981; /* Modern green */
-            --accent-hover: #059669;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
-
+        /* Classic, non-vibe-coded CSS */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            font-family: Tahoma, Verdana, Arial, sans-serif;
+            background-color: #121212;
+            color: #cccccc;
             margin: 0;
-            padding: 0;
-            line-height: 1.6;
+            padding: 20px;
+            line-height: 1.5;
         }
 
-        /* Header / Hero Section */
+        /* Header Section */
         header {
             text-align: center;
-            padding: 100px 20px 40px 20px; 
-            background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, var(--bg-color) 100%);
+            padding: 30px 20px;
+            border-bottom: 2px solid #333333;
+            margin-bottom: 30px;
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
         }
 
         h1 {
-            font-size: 4rem;
+            font-size: 3rem;
             margin: 0;
-            font-weight: 800;
-            letter-spacing: -1px;
-            text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            color: #ffffff;
+            font-weight: bold;
         }
 
         .tagline {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 20px auto;
+            font-size: 1.1rem;
+            color: #888888;
+            margin: 10px 0 0 0;
+            font-style: italic;
         }
 
         /* Buttons & IP Container */
         .actions {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 40px;
-            flex-wrap: wrap;
+            margin-top: 25px;
+            display: block;
         }
 
         .discord-btn {
-            background-color: #5865F2; /* Discord Blurple */
-            color: white;
-            text-decoration: none;
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            background-color: #5865F2;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 2px outset #8a96fc; /* Classic 3D button border */
+            font-weight: bold;
+            margin-right: 15px;
+            vertical-align: middle;
         }
 
-        .discord-btn:hover {
+        .discord-btn:active {
+            border-style: inset; /* Button pushes in when clicked */
             background-color: #4752C4;
         }
 
-        .ip-container {
-            background-color: var(--surface-color);
-            border: 1px solid #334155;
-            padding: 14px 28px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            user-select: none;
+        .discord-btn svg {
+            margin-right: 8px;
         }
 
-        .ip-container:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
+        .ip-container {
+            display: inline-flex;
+            align-items: center;
+            background-color: #000000;
+            border: 2px inset #555555; /* Inset box for code/IPs */
+            padding: 10px 20px;
+            cursor: pointer;
+            vertical-align: middle;
+        }
+
+        .ip-container:active {
+            border-style: solid;
         }
 
         .ip-text {
-            font-family: monospace;
+            font-family: "Courier New", Courier, monospace;
             font-size: 1.1rem;
-            color: var(--accent-color);
+            color: #00ff00; /* Classic green terminal text */
+            font-weight: bold;
+            margin-right: 10px;
         }
 
         .copy-icon {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: none;
-            stroke: var(--text-muted);
+            stroke: #cccccc;
             stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
         }
 
-        .ip-container:hover .copy-icon {
-            stroke: var(--accent-color);
-        }
-
-        /* Sections General */
+        /* Sections */
         section {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px; 
+            max-width: 800px;
+            margin: 0 auto 40px auto;
         }
 
         section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-align: center;
+            font-size: 1.8rem;
+            color: #ffffff;
+            border-bottom: 1px solid #444444;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
         }
 
         .about-grid {
-            background: var(--surface-color);
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px solid #334155;
-            text-align: center;
-            font-size: 1.1rem;
-            color: var(--text-muted);
+            background-color: #1e1e1e;
+            border: 1px solid #444444;
+            padding: 20px;
+            color: #bbbbbb;
+        }
+
+        .about-grid p {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .about-grid p:last-child {
+            margin-bottom: 0;
         }
 
         .highlight {
-            color: var(--accent-color);
-            font-weight: 600;
+            color: #ffaa00; /* Classic gold/yellow highlight */
+            font-weight: bold;
         }
 
         /* Footer */
         footer {
             text-align: center;
-            padding: 40px;
-            color: var(--text-muted);
-            border-top: 1px solid #334155;
+            padding: 20px;
+            color: #666666;
+            border-top: 1px solid #333333;
+            font-size: 0.9rem;
             margin-top: 40px;
         }
     </style>
@@ -156,7 +152,7 @@
         
         <div class="actions">
             <a href="https://discord.gg/sr8HvhWDjM" class="discord-btn">
-                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/>
                 </svg>
                 Join Discord
@@ -165,8 +161,8 @@
             <div class="ip-container" onclick="copyIP()" data-ip="thfproject.xyz">
                 <span class="ip-text" id="ip-display">thfproject.xyz</span>
                 <svg class="copy-icon" id="copy-icon" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    <rect x="9" y="9" width="13" height="13"></rect>
+                    <path d="M5 15H4V4h11v1"></path>
                 </svg>
             </div>
         </div>
@@ -175,14 +171,14 @@
     <section id="about">
         <h2>About The Server</h2>
         <div class="about-grid">
-            <p>Welcome to <strong>THFproject</strong></p>
-            <p>The world is an <span class="highlight">infinite void across all dimensions</span>. However, natural structures like villages, strongholds, and nether fortresses still generate normally based on the world seed, floating in the void</p>
+            <p>Welcome to <strong>THFproject</strong>.</p>
+            <p>The world is an <span class="highlight">infinite void across all dimensions</span>. However, natural structures like villages, strongholds, and nether fortresses still generate normally based on the world seed, floating in the void.</p>
             <p>Every player receives a <span class="highlight">random item every 30 seconds</span>. Use what you're given to survive.</p>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2026 THF Project. All rights reserved.</p>
+        <p>&copy; 2026 THFproject. All rights reserved.</p>
     </footer>
 
     <script>
@@ -194,18 +190,20 @@
 
             navigator.clipboard.writeText(ip).then(() => {
                 const originalText = ipDisplay.innerText;
-                ipDisplay.innerText = "Copied to clipboard!";
-                ipDisplay.style.color = "#f8fafc";
+                ipDisplay.innerText = "COPIED!";
+                ipDisplay.style.color = "#ffffff";
                 
+                // Simple retro checkmark icon
                 icon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
-                icon.style.stroke = "var(--accent-color)";
+                icon.style.stroke = "#ffffff";
 
                 setTimeout(() => {
                     ipDisplay.innerText = originalText;
-                    ipDisplay.style.color = "var(--accent-color)";
+                    ipDisplay.style.color = "#00ff00";
                     
-                    icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
-                    icon.style.stroke = "var(--text-muted)";
+                    // Restore original retro copy icon
+                    icon.innerHTML = '<rect x="9" y="9" width="13" height="13"></rect><path d="M5 15H4V4h11v1"></path>';
+                    icon.style.stroke = "#cccccc";
                 }, 2000);
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
