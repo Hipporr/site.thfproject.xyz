@@ -27,7 +27,6 @@
         /* Header / Hero Section */
         header {
             text-align: center;
-            /* Reduced bottom padding from 100px to 40px to move content up */
             padding: 100px 20px 40px 20px; 
             background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, var(--bg-color) 100%);
         }
@@ -115,7 +114,6 @@
         section {
             max-width: 1000px;
             margin: 0 auto;
-            /* Reduced general padding from 60px to 40px */
             padding: 40px 20px; 
         }
 
@@ -125,10 +123,10 @@
             text-align: center;
         }
 
-        /* Specific adjustment for Builds section to pull it higher */
+        /* Specific adjustment for Builds section */
         #builds {
-            margin-top: -30px; /* Pulls the section up into the header space */
-            padding-top: 0;   /* Removes top padding for this specific section */
+            margin-top: -30px; 
+            padding-top: 0;   
         }
 
         .about-grid {
@@ -151,7 +149,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            /* margin-top: 40px; removed to keep it tight to the H2 */
         }
 
         .gallery-item {
@@ -169,19 +166,18 @@
 
         .gallery-img {
             width: 100%;
-            height: 200px;
-            object-fit: cover;
+            height: 300px;
+            object-fit: contain;
             background-color: #0f172a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #475569;
+            display: block;
         }
 
         .gallery-caption {
             padding: 16px;
             font-weight: 600;
             text-align: center;
+            background-color: var(--surface-color);
+            border-top: 1px solid #334155;
         }
 
         /* Footer */
@@ -219,18 +215,18 @@
     </header>
 
     <section id="builds">
-        <h2>Server Images</h2>
+        <h2>Player Builds</h2>
         <div class="gallery">
             <div class="gallery-item">
-                <div class="gallery-img"><img src="img/2026-03-05_17.15.17.png" alt="spawn"></div>
+                <img src="your-spawn-image.png" alt="The Spawn" class="gallery-img">
                 <div class="gallery-caption">The Spawn</div>
             </div>
             <div class="gallery-item">
-                <div class="gallery-img">Screenshot 2 (Placeholder)</div>
+                <img src="placeholder2.png" alt="Floating Village Base" class="gallery-img">
                 <div class="gallery-caption">Floating Village Base</div>
             </div>
             <div class="gallery-item">
-                <div class="gallery-img">Screenshot 3 (Placeholder)</div>
+                <img src="placeholder3.png" alt="Nether Void Outpost" class="gallery-img">
                 <div class="gallery-caption">Nether Void Outpost</div>
             </div>
         </div>
@@ -241,7 +237,7 @@
         <div class="about-grid">
             <p>Welcome to <strong>THF Project</strong></p>
             <p>The world is an <span class="highlight">infinite void across all dimensions</span>. However, natural structures like villages, strongholds, and nether fortresses still generate normally based on the world seed, floating in the void</p>
-            <p>every player receives a <span class="highlight">random item every 30 seconds</span>. Use what you're given to survive</p>
+            <p>Every player receives a <span class="highlight">random item every 30 seconds</span>. Use what you're given to survive.</p>
         </div>
     </section>
 
@@ -251,29 +247,23 @@
 
     <script>
         function copyIP() {
-            // Get the IP from the data attribute
             const container = document.querySelector('.ip-container');
             const ip = container.getAttribute('data-ip');
             const ipDisplay = document.getElementById('ip-display');
             const icon = document.getElementById('copy-icon');
 
-            // Copy to clipboard
             navigator.clipboard.writeText(ip).then(() => {
-                // Visual feedback
                 const originalText = ipDisplay.innerText;
                 ipDisplay.innerText = "Copied to clipboard!";
                 ipDisplay.style.color = "#f8fafc";
                 
-                // Change icon temporarily to a checkmark
                 icon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
                 icon.style.stroke = "var(--accent-color)";
 
-                // Reset after 2 seconds
                 setTimeout(() => {
                     ipDisplay.innerText = originalText;
                     ipDisplay.style.color = "var(--accent-color)";
                     
-                    // Restore original copy icon
                     icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
                     icon.style.stroke = "var(--text-muted)";
                 }, 2000);
