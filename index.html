@@ -27,7 +27,8 @@
         /* Header / Hero Section */
         header {
             text-align: center;
-            padding: 100px 20px;
+            /* Reduced bottom padding from 100px to 40px to move content up */
+            padding: 100px 20px 40px 20px; 
             background: linear-gradient(180deg, rgba(16, 185, 129, 0.1) 0%, var(--bg-color) 100%);
         }
 
@@ -110,17 +111,24 @@
             stroke: var(--accent-color);
         }
 
-        /* Sections */
+        /* Sections General */
         section {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 60px 20px;
+            /* Reduced general padding from 60px to 40px */
+            padding: 40px 20px; 
         }
 
         section h2 {
             font-size: 2.5rem;
             margin-bottom: 20px;
             text-align: center;
+        }
+
+        /* Specific adjustment for Builds section to pull it higher */
+        #builds {
+            margin-top: -30px; /* Pulls the section up into the header space */
+            padding-top: 0;   /* Removes top padding for this specific section */
         }
 
         .about-grid {
@@ -143,7 +151,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
-            margin-top: 40px;
+            /* margin-top: 40px; removed to keep it tight to the H2 */
         }
 
         .gallery-item {
