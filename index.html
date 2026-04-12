@@ -1,215 +1,1128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THFproject</title>
-    <style>
-        /* Classic, non-vibe-coded CSS */
-        body {
-            font-family: Tahoma, Verdana, Arial, sans-serif;
-            background-color: #121212;
-            color: #cccccc;
-            margin: 0;
-            padding: 20px;
-            line-height: 1.5;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THFproject</title>
+  <meta name="description" content="thfProject — A semi-anarchy void Minecraft server. No floor, random items every 30 seconds, Java &amp; Bedrock cross-play." />
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAA6ElEQVR4Xu2Qyw3CQBDF0gadUAcS7VAGolW4wGkPWElmE4Xvs6V38e5lPNzDGSjSMABFGgagSMMAFGkYgCINA1CkYQCKNAxAkYYBKNIwAEUaLwlwOB+fthX7y61rSzAAxRzX0+5pUxjAAO8JsAUGoBiDh3NkqwA8eOl6MADFGDyYI1WA6r3Bg5auBwNQzFEd3qgOrN6nWHNghQEo5lgbgCPVe8MABjDAbwao6P1vAAMY4LMByFSQ3oMavf8NYAADfFeAf8AAFGkYgCINA1CkYQCKNAxAkYYBKNIwAEUaBqBIwwAUacQHeACu6DHUTws7PwAAAABJRU5ErkJggg==" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        /* Header Section */
-        header {
-            text-align: center;
-            padding: 30px 20px;
-            border-bottom: 2px solid #333333;
-            margin-bottom: 30px;
-            background-color: #1a1a1a;
-            border: 1px solid #333333;
-        }
+    :root {
+      --t: #e04918;
+      --h: #4ade80;
+      --f: #38bdf8;
+      --card: #5a5a5a;
+      --r: 4px;
+    }
 
-        h1 {
-            font-size: 3rem;
-            margin: 0;
-            color: #ffffff;
-            font-weight: bold;
-        }
+    html { scroll-behavior: smooth; }
 
-        .tagline {
-            font-size: 1.1rem;
-            color: #888888;
-            margin: 10px 0 0 0;
-            font-style: italic;
-        }
+    body {
+      font-family: 'Press Start 2P', monospace;
+      background: #000;
+      color: #fff;
+      overflow-x: hidden;
+    }
 
-        /* Buttons & IP Container */
-        .actions {
-            margin-top: 25px;
-            display: block;
-        }
+    a { color: inherit; text-decoration: none; }
+    button { cursor: pointer; font-family: inherit; }
 
-        .discord-btn {
-            display: inline-flex;
-            align-items: center;
-            background-color: #5865F2;
-            color: #ffffff;
-            text-decoration: none;
-            padding: 10px 20px;
-            border: 2px outset #8a96fc; /* Classic 3D button border */
-            font-weight: bold;
-            margin-right: 15px;
-            vertical-align: middle;
-        }
+    /* ── Starfield canvas ─────────────────────────────────────────── */
+    #stars {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-        .discord-btn:active {
-            border-style: inset; /* Button pushes in when clicked */
-            background-color: #4752C4;
-        }
+    #navbar, #mobile-menu, section, footer { position: relative; z-index: 1; }
 
-        .discord-btn svg {
-            margin-right: 8px;
-        }
+    /* ── Logo ─────────────────────────────────────────────────────── */
+    .logo .lt { color: var(--t); }
+    .logo .lh { color: var(--h); }
+    .logo .lf { color: var(--f); }
 
-        .ip-container {
-            display: inline-flex;
-            align-items: center;
-            background-color: #1e1e1e;
-            border: 2px inset #555555; /* Inset box for code/IPs */
-            padding: 10px 20px;
-            cursor: pointer;
-            vertical-align: middle;
-        }
+    /* ── Navbar ───────────────────────────────────────────────────── */
+    #navbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 58px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px;
+      transition: background .3s;
+    }
+    #navbar.scrolled {
+      background: rgba(0,0,0,.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 2px solid rgba(255,255,255,.07);
+    }
 
-        .ip-container:active {
-            border-style: solid;
-        }
+    .nav-logo { font-size: .85rem; letter-spacing: .02em; }
 
-        .ip-text {
-            font-family: "Courier New", Courier, monospace;
-            font-size: 1.1rem;
-            color: #ffaa00; /* Classic green terminal text */
-            font-weight: bold;
-            margin-right: 10px;
-        }
+    .nav-right {
+      display: flex; align-items: center; gap: 1rem;
+    }
 
-        .copy-icon {
-            width: 18px;
-            height: 18px;
-            fill: none;
-            stroke: #cccccc;
-            stroke-width: 2;
-        }
+    .nav-link {
+      font-size: .5rem; color: rgba(255,255,255,.6);
+      transition: color .2s; white-space: nowrap;
+    }
+    .nav-link:hover { color: #fff; }
 
-        /* Sections */
-        section {
-            max-width: 800px;
-            margin: 0 auto 40px auto;
-        }
+    .nav-pill {
+      font-family: 'Press Start 2P', monospace;
+      font-size: .48rem;
+      padding: .45rem .8rem;
+      border-radius: 2px; border: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .2s, transform .2s;
+    }
+    .nav-pill:hover { opacity: .85; transform: translateY(-1px); }
+    .nav-pill.discord { background: #5865F2; color: #fff; }
+    .nav-pill.youtube { background: #FF0000; color: #fff; }
+    .nav-pill.donate  { background: #f5c400; color: #000; border: none; }
+    .nav-pill.donate:hover { background: #ffd700; }
 
-        section h2 {
-            font-size: 1.8rem;
-            color: #ffffff;
-            border-bottom: 1px solid #444444;
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
+    @media (max-width: 900px) {
+      .nav-link { display: none; }
+    }
 
-        .about-grid {
-            background-color: #1e1e1e;
-            border: 1px solid #444444;
-            padding: 20px;
-            color: #bbbbbb;
-        }
+    #hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: transparent; border: none; padding: 6px;
+    }
+    #hamburger span {
+      display: block; width: 22px; height: 2px;
+      background: #fff; border-radius: 0;
+      transition: transform .3s, opacity .3s;
+    }
+    #hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    #hamburger.open span:nth-child(2) { opacity: 0; }
+    #hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-        .about-grid p {
-            margin-top: 0;
-            margin-bottom: 15px;
-        }
+    #mobile-menu {
+      display: none; position: fixed;
+      top: 58px; left: 0; right: 0;
+      background: rgba(0,0,0,.97);
+      padding: 1.5rem 28px 2rem; z-index: 99;
+      flex-direction: column; gap: 1.4rem;
+      border-bottom: 2px solid rgba(255,255,255,.07);
+    }
+    #mobile-menu.open { display: flex; }
+    #mobile-menu a {
+      font-size: .6rem; color: rgba(255,255,255,.65);
+      transition: color .2s;
+    }
+    #mobile-menu a:hover { color: #fff; }
 
-        .about-grid p:last-child {
-            margin-bottom: 0;
-        }
+    @media (max-width: 767px) {
+      .nav-right .nav-link,
+      .nav-right .nav-pill { display: none; }
+      #hamburger { display: flex; }
+    }
 
-        .highlight {
-            color: #ffaa00; /* Classic gold/yellow highlight */
-            font-weight: bold;
-        }
+    /* ── Toast ────────────────────────────────────────────────────── */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(12px);
+      background: var(--h); color: #000;
+      font-size: .5rem; font-family: 'Press Start 2P', monospace;
+      padding: .6rem 1.2rem; border-radius: 2px;
+      z-index: 9999; pointer-events: none; opacity: 0;
+      transition: opacity .2s, transform .2s;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #666666;
-            border-top: 1px solid #333333;
-            font-size: 0.9rem;
-            margin-top: 40px;
-        }
-    </style>
+    /* ── Section layout ───────────────────────────────────────────── */
+    .wrap { max-width: 1040px; margin: 0 auto; padding: 0 28px; }
+    section { padding: 70px 0; }
+
+    .sec-eyebrow {
+      font-size: .5rem; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(255,255,255,.45); margin-bottom: .9rem;
+    }
+    .sec-title {
+      font-size: clamp(1.1rem, 3.5vw, 2rem);
+      line-height: 1.4; margin-bottom: 1.2rem;
+      letter-spacing: .02em;
+    }
+    .sec-body {
+      font-family: 'Press Start 2P', monospace;
+      font-size: .6rem;
+      color: rgba(255,255,255,.65); max-width: 540px; line-height: 2;
+    }
+
+    /* ── HERO ─────────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 100px 28px 80px;
+    }
+
+    .hero-logo {
+      font-size: clamp(2.2rem, 9vw, 5.5rem);
+      letter-spacing: .04em; line-height: 1;
+      margin-bottom: 1.8rem;
+    }
+
+    .player-pill {
+      display: inline-flex; align-items: center; gap: .6rem;
+      font-size: .45rem;
+      background: rgba(255,255,255,.07);
+      border: 2px solid rgba(255,255,255,.12);
+      padding: .55rem 1.1rem; border-radius: 2px;
+      margin-bottom: 2rem;
+    }
+    .sdot { width: 8px; height: 8px; border-radius: 0; background: #555; flex-shrink: 0; }
+    .sdot.on  { background: var(--h); box-shadow: 0 0 6px var(--h); }
+    .sdot.off { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+
+    /* ── Two hero cards ───────────────────────────────────────────── */
+    .hero-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; width: 100%; max-width: 860px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-card {
+      background: var(--card);
+      border-radius: var(--r);
+      padding: 24px 20px;
+      display: flex; align-items: center; gap: 16px;
+      text-align: left;
+      min-height: 140px;
+      border: 2px solid rgba(255,255,255,.08);
+    }
+
+    .block-cluster {
+      position: relative;
+      width: 96px; height: 88px;
+      flex-shrink: 0;
+    }
+    .block-cluster img {
+      position: absolute;
+      width: 52px; height: 52px;
+      object-fit: contain;
+      image-rendering: pixelated;
+    }
+    .block-cluster img:nth-child(1) { top: 0;    left: 0; }
+    .block-cluster img:nth-child(2) { top: 10px; left: 26px; z-index: 1; width: 56px; height: 56px; }
+    .block-cluster img:nth-child(3) { top: 28px; left: 4px;  z-index: 2; }
+
+    .hc-sub { font-size: .5rem; color: rgba(255,255,255,.7); margin-bottom: 6px; }
+    .hc-main { font-size: .95rem; line-height: 1.5; }
+    .hc-main .under { display: block; font-size: .7rem; color: rgba(255,255,255,.8); margin-top: 6px; }
+
+    .end-ship-img {
+      width: 110px; height: 80px;
+      object-fit: contain; flex-shrink: 0;
+      image-rendering: pixelated;
+    }
+
+    /* Copy box */
+    .copy-box {
+      width: 100%; max-width: 400px;
+      background: var(--card);
+      border-radius: var(--r);
+      overflow: hidden;
+      margin-bottom: 1.8rem;
+      border: 2px solid rgba(255,255,255,.08);
+    }
+    .copy-row {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .8rem 1.1rem; cursor: pointer;
+      border-bottom: 1px solid rgba(0,0,0,.3);
+      transition: background .15s;
+    }
+    .copy-row:last-of-type { border-bottom: none; }
+    .copy-row:hover { background: rgba(255,255,255,.08); }
+    .copy-lbl {
+      font-size: .4rem; letter-spacing: .08em; text-transform: uppercase;
+      color: rgba(255,255,255,.5); flex-shrink: 0; width: 76px;
+    }
+    .copy-val { font-size: .6rem; flex: 1; text-align: left; }
+    .copy-ic { width: 26px; height: 26px; border-radius: 2px; background: rgba(0,0,0,.28); display: flex; align-items: center; justify-content: center; }
+    .copy-ic svg { width: 12px; height: 12px; stroke: rgba(255,255,255,.5); fill: none; }
+    .copy-tags { display: flex; gap: .45rem; padding: .55rem 1.1rem; background: rgba(0,0,0,.22); border-top: 1px solid rgba(0,0,0,.3); }
+    .copy-tag { font-size: .38rem; letter-spacing: .07em; text-transform: uppercase; padding: .22rem .55rem; border-radius: 2px; background: rgba(0,0,0,.3); color: rgba(255,255,255,.5); }
+
+    /* Hero buttons */
+    .hero-btns { display: flex; gap: .8rem; flex-wrap: wrap; justify-content: center; }
+    .btn-hero {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .7rem 1.3rem; border-radius: 2px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: .5rem; border: none;
+      transition: opacity .2s, transform .2s;
+    }
+    .btn-hero:hover { opacity: .85; transform: translateY(-2px); }
+    .btn-hero.discord { background: #5865F2; color: #fff; }
+    .btn-hero.youtube { background: #FF0000; color: #fff; }
+    .btn-hero.donate  { background: #f5c400; color: #000; border: none; }
+    .btn-hero.donate:hover { background: #ffd700; opacity: 1; }
+
+    .scroll-arr {
+      margin-top: 2.5rem;
+      animation: bob 2.2s ease-in-out infinite;
+    }
+    .scroll-arr svg { width: 22px; height: 22px; stroke: rgba(255,255,255,.3); fill: none; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+    @media (max-width: 640px) {
+      .hero-cards { grid-template-columns: 1fr; }
+    }
+
+    /* ── ABOUT / INFO ─────────────────────────────────────────────── */
+    #info { border-top: 1px solid rgba(255,255,255,.06); }
+
+    .info-row {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px; margin-top: 2.5rem;
+    }
+    .info-card {
+      background: var(--card); border-radius: var(--r);
+      padding: 28px 22px; position: relative; overflow: hidden;
+      border: 2px solid rgba(255,255,255,.08);
+    }
+    .info-accent {
+      position: absolute; right: -12px; bottom: -12px;
+      width: 120px; height: 120px; object-fit: cover;
+      opacity: .12; border-radius: 0; pointer-events: none;
+    }
+    .info-lbl { font-size: .38rem; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: .5rem; }
+    .info-val { font-size: .88rem; line-height: 1.4; }
+    .info-desc { font-family: 'Press Start 2P', monospace; font-size: .45rem; color: rgba(255,255,255,.6); margin-top: .4rem; line-height: 1.8; }
+
+    @media (max-width: 767px) { .info-row { grid-template-columns: 1fr; } }
+    @media (min-width: 768px) and (max-width: 900px) { .info-row { grid-template-columns: 1fr 1fr; } }
+
+    /* ── FEATURES ─────────────────────────────────────────────────── */
+    #features { border-top: 1px solid rgba(255,255,255,.06); }
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 14px; margin-top: 2.5rem;
+    }
+    .feat-card {
+      background: var(--card); border-radius: var(--r);
+      padding: 26px 20px;
+      border: 2px solid rgba(255,255,255,.08);
+      transition: transform .2s, background .2s;
+    }
+    .feat-card:hover { transform: translateY(-4px); background: #686868; }
+    .feat-title { font-size: .65rem; margin-bottom: .7rem; line-height: 1.5; }
+    .feat-body { font-family: 'Press Start 2P', monospace; font-size: .45rem; color: rgba(255,255,255,.65); line-height: 1.9; }
+    @media (max-width: 767px) { .feat-grid { grid-template-columns: 1fr; } }
+    @media (min-width: 768px) and (max-width: 1023px) { .feat-grid { grid-template-columns: 1fr 1fr; } }
+
+    /* ── GALLERY ──────────────────────────────────────────────────── */
+    #gallery { padding: 0; border-top: 1px solid rgba(255,255,255,.06); }
+    .gal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; }
+    .gal-grid img { width: 100%; aspect-ratio: 16/9; object-fit: cover; filter: brightness(.72); transition: filter .3s, transform .3s; display: block; }
+    .gal-grid img:hover { filter: brightness(1); transform: scale(1.04); z-index: 2; position: relative; }
+    @media (max-width: 767px) {
+      .gal-grid { display: flex; overflow-x: auto; gap: 10px; padding: 14px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+      .gal-grid img { flex-shrink: 0; width: 75vw; height: 42vw; border-radius: 0; scroll-snap-align: start; }
+    }
+
+    /* ── JOIN ─────────────────────────────────────────────────────── */
+    #join { border-top: 1px solid rgba(255,255,255,.06); }
+    .join-cards {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin-top: 2.5rem;
+    }
+    .join-card { background: var(--card); border-radius: var(--r); padding: 26px 22px; border: 2px solid rgba(255,255,255,.08); }
+    .join-title { font-size: .65rem; margin-bottom: 1.2rem; display: flex; align-items: center; gap: .6rem; }
+    .jbadge { font-size: .34rem; letter-spacing: .07em; text-transform: uppercase; padding: .22rem .55rem; border-radius: 2px; background: rgba(0,0,0,.3); color: rgba(255,255,255,.5); }
+    .join-row { display: flex; justify-content: space-between; align-items: baseline; padding: .6rem 0; border-bottom: 1px solid rgba(0,0,0,.28); gap: .5rem; }
+    .join-row:last-child { border-bottom: none; }
+    .jr-lbl { font-size: .38rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.45); flex-shrink: 0; }
+    .jr-val { font-size: .58rem; text-align: right; }
+    .join-note { margin-top: 1.8rem; text-align: center; font-size: .42rem; color: rgba(255,255,255,.5); line-height: 1.8; }
+    @media (max-width: 640px) { .join-cards { grid-template-columns: 1fr; } }
+
+    /* ── RULES — ultra compact ────────────────────────────────────── */
+    #rules-section { border-top: 1px solid rgba(255,255,255,.06); }
+
+    .rule-block {
+      background: var(--card);
+      border-radius: var(--r);
+      border: 2px solid rgba(255,255,255,.08);
+      padding: 28px 28px;
+      margin-top: 2.5rem;
+      display: inline-block;
+    }
+
+    .rule-only {
+      font-size: clamp(.7rem, 2.5vw, 1.1rem);
+      line-height: 1.8;
+    }
+    .rule-only .hl-red { color: #ef4444; }
+
+    /* ── FOOTER ───────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,.07);
+      padding: 48px 28px 34px; text-align: center;
+    }
+    .ft-logo { font-size: 1.6rem; margin-bottom: 1.4rem; }
+    .ft-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 1.6rem; margin-bottom: 1.4rem; }
+    .ft-links a { font-size: .42rem; color: rgba(255,255,255,.5); transition: color .2s; }
+    .ft-links a:hover { color: #fff; }
+    .ft-sub  { font-size: .38rem; color: rgba(255,255,255,.25); margin-bottom: .4rem; line-height: 2; }
+    .ft-disc { font-family: 'Press Start 2P', monospace; font-size: .38rem; color: rgba(255,255,255,.18); }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>THFproject</h1>
-        <p class="tagline">Survive the void.</p>
-        
-        <div class="actions">
-            <a href="https://discord.gg/sr8HvhWDjM" class="discord-btn">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/>
-                </svg>
-                Join Discord
-            </a>
+<canvas id="stars"></canvas>
+<div id="toast">Copied!</div>
 
-            <div class="ip-container" onclick="copyIP()" data-ip="thfproject.xyz">
-                <span class="ip-text" id="ip-display">thfproject.xyz</span>
-                <svg class="copy-icon" id="copy-icon" viewBox="0 0 24 24">
-                    <rect x="9" y="9" width="13" height="13"></rect>
-                    <path d="M5 15H4V4h11v1"></path>
-                </svg>
-            </div>
-        </div>
-    </header>
+<!-- NAVBAR -->
+<nav id="navbar">
+  <a href="#hero" class="logo nav-logo" aria-label="THFproject">
+    <span class="lt">T</span><span class="lh">H</span><span class="lf">F</span>
+  </a>
+  <div class="nav-right">
+    <a href="#info"          class="nav-link">About</a>
+    <a href="#features"      class="nav-link">Features</a>
+    <a href="#join"          class="nav-link">Join</a>
+    <a href="#rules-section" class="nav-link">Rules</a>
+    <a href="https://discord.gg/N7SWAkUjSs"        target="_blank" rel="noopener" class="nav-pill discord">Discord</a>
+    <a href="https://www.youtube.com/@THFPROJECT"   target="_blank" rel="noopener" class="nav-pill youtube">YouTube</a>
+    <a href="https://ko-fi.com/zlopi_"              target="_blank" rel="noopener" class="nav-pill donate">Donate</a>
+  </div>
+  <button id="hamburger" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</nav>
 
-    <section id="about">
-        <h2>About The Server</h2>
-        <div class="about-grid">
-            <p>Welcome to <strong>THFproject</strong>.</p>
-            <p>The world is an <span class="highlight">infinite void across all dimensions</span>. However, natural structures like villages, strongholds, and nether fortresses still generate normally based on the world seed, floating in the void.</p>
-            <p>Every player receives a <span class="highlight">random item every 30 seconds</span>. Use what you're given to survive.</p>
-        </div>
-    </section>
+<div id="mobile-menu">
+  <a href="#info">About</a>
+  <a href="#features">Features</a>
+  <a href="#join">Join</a>
+  <a href="#rules-section">Rules</a>
+  <a href="https://discord.gg/N7SWAkUjSs"      target="_blank" rel="noopener">Discord</a>
+  <a href="https://www.youtube.com/@THFPROJECT" target="_blank" rel="noopener">YouTube</a>
+  <a href="https://ko-fi.com/zlopi_"            target="_blank" rel="noopener">Donate</a>
+</div>
 
-    <footer>
-        
-    </footer>
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-logo logo">
+    <span class="lt">t</span><span class="lh">h</span><span class="lf">f</span><span>project</span>
+  </div>
 
-    <script>
-        function copyIP() {
-            const container = document.querySelector('.ip-container');
-            const ip = container.getAttribute('data-ip');
-            const ipDisplay = document.getElementById('ip-display');
-            const icon = document.getElementById('copy-icon');
+  <div class="player-pill">
+    <span class="sdot" id="sdot"></span>
+    <span id="stext">Checking server...</span>
+  </div>
 
-            navigator.clipboard.writeText(ip).then(() => {
-                const originalText = ipDisplay.innerText;
-                ipDisplay.innerText = "COPIED!";
-                ipDisplay.style.color = "#ffffff";
-                
-                // Simple retro checkmark icon
-                icon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
-                icon.style.stroke = "#ffffff";
+  <div class="hero-cards">
+    <div class="hero-card">
+      <img
+        id="respawn-anchor-img"
+        src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/respawn_anchor_top_off.png"
+        alt="Respawn Anchor"
+        style="width:80px;height:80px;image-rendering:pixelated;flex-shrink:0;cursor:pointer;"
+      />
+      <div class="hero-card-txt">
+        <p class="hc-sub">Random items</p>
+        <p class="hc-main">every<br>30 seconds</p>
+      </div>
+    </div>
 
-                setTimeout(() => {
-                    ipDisplay.innerText = originalText;
-                    ipDisplay.style.color = "#00ff00";
-                    
-                    // Restore original retro copy icon
-                    icon.innerHTML = '<rect x="9" y="9" width="13" height="13"></rect><path d="M5 15H4V4h11v1"></path>';
-                    icon.style.stroke = "#cccccc";
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy text: ', err);
-                alert("Failed to copy IP. Please copy it manually: " + ip);
-            });
-        }
-    </script>
+    <div class="hero-card">
+      <img class="end-ship-img" src="https://minecraft.wiki/images/End_ship.png" onerror="this.onerror=null;this.src='https://minecraft.wiki/images/End_Ship.png'" alt="End Ship" />
+      <div class="hero-card-txt">
+        <p class="hc-main">
+          VOID WORLD
+          <span class="under">and structures spawn</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="copy-box">
+    <div class="copy-row" data-copy="thfproject.xyz" role="button" tabindex="0" aria-label="Copy Java IP">
+      <span class="copy-lbl">Java IP</span>
+      <span class="copy-val">thfproject.xyz</span>
+      <span class="copy-ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="0"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>
+    </div>
+    <div class="copy-row" data-copy="thfproject.xyz" role="button" tabindex="0" aria-label="Copy Bedrock IP">
+      <span class="copy-lbl">Bedrock IP</span>
+      <span class="copy-val">thfproject.xyz</span>
+      <span class="copy-ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="0"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>
+    </div>
+    <div class="copy-row" data-copy="25566" role="button" tabindex="0" aria-label="Copy Bedrock Port">
+      <span class="copy-lbl">Port</span>
+      <span class="copy-val">25566</span>
+      <span class="copy-ic"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="0"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>
+    </div>
+    <div class="copy-tags">
+      <span class="copy-tag">Java 1.21.1+</span>
+      <span class="copy-tag">Bedrock</span>
+    </div>
+  </div>
+
+  <div class="hero-btns">
+    <a href="https://discord.gg/N7SWAkUjSs"      target="_blank" rel="noopener" class="btn-hero discord">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+      Discord
+    </a>
+    <a href="https://www.youtube.com/@THFPROJECT" target="_blank" rel="noopener" class="btn-hero youtube">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      YouTube
+    </a>
+    <a href="https://ko-fi.com/zlopi_" target="_blank" rel="noopener" class="btn-hero donate">
+      Donate
+    </a>
+  </div>
+
+  <a href="#info" class="scroll-arr" aria-label="Scroll down">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </a>
+</section>
+
+<!-- ABOUT -->
+<section id="info">
+  <div class="wrap">
+    <p class="sec-eyebrow">What is thfProject</p>
+    <h2 class="sec-title">A Void World</h2>
+    <p class="sec-body">No ground. No rules. An infinite void stretches in every direction. Every 30 seconds a random item drops into your inventory — and vanilla structures spawn right in the void.</p>
+    <div class="info-row">
+      <div class="info-card">
+        <p class="info-lbl">World Type</p>
+        <p class="info-val">Infinite Void</p>
+        <p class="info-desc">No floor, ceiling, or walls</p>
+        <img src="img/3.webp" alt="" class="info-accent" />
+      </div>
+      <div class="info-card">
+        <p class="info-lbl">Item Drop</p>
+        <p class="info-val">Every 30s</p>
+        <p class="info-desc">Random item to your inventory</p>
+        <img src="img/4.webp" alt="" class="info-accent" />
+      </div>
+      <div class="info-card">
+        <p class="info-lbl">Structures</p>
+        <p class="info-val">Floating</p>
+        <p class="info-desc">End cities, fortresses &amp; more</p>
+        <img src="img/5.webp" alt="" class="info-accent" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="wrap">
+    <p class="sec-eyebrow">Core Features</p>
+    <h2 class="sec-title">How It Works</h2>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <h3 class="feat-title">Infinite Void</h3>
+        <p class="feat-body">No floor. No ceiling. No walls. Every block you stand on is one you placed — or found. Falling ends everything.</p>
+      </div>
+      <div class="feat-card">
+        <h3 class="feat-title">Random Items</h3>
+        <p class="feat-body">Every 30 seconds the void delivers a random item. Diamond sword? Gravel? Lava bucket? You adapt to what fate sends.</p>
+      </div>
+      <div class="feat-card">
+        <h3 class="feat-title">Vanilla Structures</h3>
+        <p class="feat-body">End cities, Nether fortresses, strongholds and dungeons — all floating in the darkness with nothing beneath them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gal-grid">
+    <img src="img/1.webp" alt="Screenshot 1" loading="lazy" />
+    <img src="img/2.webp" alt="Screenshot 2" loading="lazy" />
+    <img src="img/3.webp" alt="Screenshot 3" loading="lazy" />
+    <img src="img/4.webp" alt="Screenshot 4" loading="lazy" />
+    <img src="img/5.webp" alt="Screenshot 5" loading="lazy" />
+    <img src="img/6.webp" alt="Screenshot 6" loading="lazy" />
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join">
+  <div class="wrap">
+    <p class="sec-eyebrow">How to Join</p>
+    <h2 class="sec-title">Connect Now</h2>
+    <div class="join-cards">
+      <div class="join-card">
+        <h3 class="join-title">Java <span class="jbadge">Java</span></h3>
+        <div class="join-row"><span class="jr-lbl">IP</span><span class="jr-val">thfproject.xyz</span></div>
+        <div class="join-row"><span class="jr-lbl">Version</span><span class="jr-val">1.21.1+</span></div>
+      </div>
+      <div class="join-card">
+        <h3 class="join-title">Bedrock <span class="jbadge">Bedrock</span></h3>
+        <div class="join-row"><span class="jr-lbl">IP</span><span class="jr-val">thfproject.xyz</span></div>
+        <div class="join-row"><span class="jr-lbl">Port</span><span class="jr-val">25566</span></div>
+        <div class="join-row"><span class="jr-lbl">Platforms</span><span class="jr-val">Mobile / Console / PC</span></div>
+      </div>
+    </div>
+    <p class="join-note">Full cross-play enabled — Java &amp; Bedrock together</p>
+  </div>
+</section>
+
+<!-- RULES -->
+<section id="rules-section">
+  <div class="wrap">
+    <p class="sec-eyebrow">Server Rules</p>
+    <h2 class="sec-title">Semi-Anarchy</h2>
+    <div class="rule-block">
+      <p class="rule-only">
+        One rule:<br>
+        <span class="hl-red">No cheating.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo ft-logo">
+    <span class="lt">T</span><span class="lh">H</span><span class="lf">F</span>
+  </div>
+  <div class="ft-links">
+    <a href="https://discord.gg/N7SWAkUjSs"      target="_blank" rel="noopener">Discord</a>
+    <a href="https://www.youtube.com/@THFPROJECT" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://ko-fi.com/zlopi_"            target="_blank" rel="noopener">Ko-fi / Donate</a>
+  </div>
+  <p class="ft-sub">thfproject.xyz · Java &amp; Bedrock · Semi-Anarchy Void</p>
+  <p class="ft-disc">Not affiliated with Mojang or Microsoft</p>
+</footer>
+
+<script>
+/* ── Starfield ──────────────────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('stars');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  const COUNT = 220;
+
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = document.body.scrollHeight;
+  }
+
+  function init() {
+    resize();
+    stars = [];
+    for (let i = 0; i < COUNT; i++) {
+      stars.push({
+        x:     Math.random() * canvas.width,
+        y:     Math.random() * canvas.height,
+        r:     Math.random() * 1.4 + 0.3,
+        alpha: Math.random() * 0.7 + 0.2,
+        speed: Math.random() * 0.4 + 0.05,
+        dir:   Math.random() > 0.5 ? 1 : -1,
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    frame++;
+    stars.forEach(s => {
+      const twinkle = s.alpha * (0.6 + 0.4 * Math.sin(frame * s.speed * 0.04 + s.phase));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${twinkle.toFixed(3)})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => {
+    resize();
+    stars.forEach(s => { s.x = Math.random() * canvas.width; });
+  });
+
+  new ResizeObserver(resize).observe(document.body);
+  init();
+  draw();
+})();
+
+/* ── Navbar ─────────────────────────────────────────────────────── */
+const nb = document.getElementById('navbar');
+window.addEventListener('scroll', () => nb.classList.toggle('scrolled', scrollY > 20), {passive:true});
+
+/* ── Hamburger ──────────────────────────────────────────────────── */
+const hb = document.getElementById('hamburger');
+const mm = document.getElementById('mobile-menu');
+hb.addEventListener('click', () => {
+  const o = mm.classList.toggle('open');
+  hb.classList.toggle('open', o);
+  hb.setAttribute('aria-expanded', String(o));
+});
+mm.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  mm.classList.remove('open'); hb.classList.remove('open');
+  hb.setAttribute('aria-expanded','false');
+}));
+
+/* ── Player status ──────────────────────────────────────────────── */
+const sdot  = document.getElementById('sdot');
+const stext = document.getElementById('stext');
+async function fetchStatus() {
+  try {
+    const r = await fetch('https://api.mcstatus.io/v2/status/java/thfproject.xyz');
+    if (!r.ok) throw 0;
+    const d = await r.json();
+    if (d.online) {
+      sdot.className = 'sdot on';
+      stext.textContent = `${d.players.online} player${d.players.online !== 1 ? 's' : ''} online`;
+    } else throw 0;
+  } catch {
+    sdot.className = 'sdot off';
+    stext.textContent = 'Offline';
+  }
+}
+fetchStatus();
+setInterval(fetchStatus, 30000);
+
+/* ── Copy rows ──────────────────────────────────────────────────── */
+let tt = null;
+const toast = document.getElementById('toast');
+const showToast = () => {
+  clearTimeout(tt);
+  toast.classList.add('show');
+  tt = setTimeout(() => toast.classList.remove('show'), 2000);
+};
+document.querySelectorAll('.copy-row').forEach(row => {
+  const go = () => {
+    const v = row.dataset.copy;
+    navigator.clipboard?.writeText(v).then(showToast).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = v; ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast();
+    });
+  };
+  row.addEventListener('click', go);
+  row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') go(); });
+});
+
+/* ── EASTER EGG 1: Click respawn anchor 30x → random item falls ── */
+(function() {
+  const ITEMS = [
+    'diamond','iron_ingot','gold_ingot','emerald','netherite_ingot',
+    'apple','golden_apple','enchanted_golden_apple','bread','cooked_beef',
+    'bow','crossbow','trident','iron_sword','diamond_sword',
+    'tnt','obsidian','lava_bucket','ender_pearl','totem_of_undying',
+    'elytra','shulker_shell','blaze_rod','ghast_tear','dragon_breath',
+    'gravel','dirt','sand','cobblestone','stick'
+  ];
+  const BASE = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/';
+  const BLOCK_BASE = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/';
+  const BLOCK_ITEMS = ['tnt','obsidian','gravel','dirt','sand','cobblestone'];
+
+  let clicks = 0;
+  const anchor = document.getElementById('respawn-anchor-img');
+  anchor.title = '0 / 30';
+
+  anchor.addEventListener('click', () => {
+    clicks++;
+    anchor.title = `${clicks} / 30`;
+    // glow pulse on each click
+    anchor.style.filter = 'brightness(2)';
+    setTimeout(() => anchor.style.filter = '', 120);
+
+    if (clicks >= 30) {
+      clicks = 0;
+      anchor.title = '0 / 30';
+      dropItem();
+    }
+  });
+
+  function dropItem() {
+    const name = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+    const isBlock = BLOCK_ITEMS.includes(name);
+    const src = (isBlock ? BLOCK_BASE : BASE) + name + '.png';
+
+    const el = document.createElement('img');
+    el.src = src;
+    el.style.cssText = `
+      position:fixed; z-index:9999; pointer-events:none;
+      width:48px; height:48px; image-rendering:pixelated;
+      left:${Math.random()*80+10}vw; top:-60px;
+      transition: top 2.2s cubic-bezier(.2,.8,.4,1), opacity .4s;
+    `;
+    document.body.appendChild(el);
+
+    // label
+    const lbl = document.createElement('div');
+    lbl.textContent = name.replace(/_/g,' ');
+    lbl.style.cssText = `
+      position:fixed; z-index:9999; pointer-events:none;
+      font-family:'Press Start 2P',monospace; font-size:.35rem;
+      color:#fff; text-shadow:1px 1px 0 #000;
+      left:${el.style.left}; top:-20px;
+      transition: top 2.2s cubic-bezier(.2,.8,.4,1), opacity .4s;
+    `;
+    document.body.appendChild(lbl);
+
+    requestAnimationFrame(() => {
+      el.style.top  = '95vh';
+      lbl.style.top = '95vh';
+    });
+
+    setTimeout(() => {
+      el.style.opacity  = '0';
+      lbl.style.opacity = '0';
+      setTimeout(() => { el.remove(); lbl.remove(); }, 500);
+    }, 2000);
+  }
+})();
+
+/* ── EASTER EGG 2: Click THF logo 10x → glitch + ding ─────────── */
+(function() {
+  let clicks = 0;
+  const logo = document.querySelector('#hero .hero-logo');
+  logo.style.cursor = 'pointer';
+
+  logo.addEventListener('click', () => {
+    clicks++;
+    if (clicks >= 10) {
+      clicks = 0;
+      glitch();
+    }
+  });
+
+  function glitch() {
+    const COLORS = ['#e04918','#4ade80','#38bdf8','#f5c400','#ff00ff','#00ffff','#ff0000','#ffffff'];
+    let i = 0;
+    const iv = setInterval(() => {
+      logo.style.filter = `hue-rotate(${Math.random()*360}deg) brightness(${1+Math.random()*2})`;
+      logo.style.transform = `skewX(${(Math.random()-0.5)*18}deg) scale(${0.9+Math.random()*.3})`;
+      logo.style.color = COLORS[Math.floor(Math.random()*COLORS.length)];
+      i++;
+      if (i > 18) {
+        clearInterval(iv);
+        logo.style.filter = '';
+        logo.style.transform = '';
+        logo.style.color = '';
+      }
+    }, 70);
+
+    // ding via AudioContext
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.4);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      osc.start(); osc.stop(ctx.currentTime + 0.5);
+    } catch(e) {}
+  }
+})();
+
+/* ── EASTER EGG 4: Click "A Void World" 5x → page tilts ──────── */
+(function() {
+  let clicks = 0;
+  let tilted = false;
+  const heading = document.querySelector('#info .sec-title');
+  heading.style.cursor = 'pointer';
+
+  heading.addEventListener('click', () => {
+    if (tilted) return;
+    clicks++;
+    if (clicks >= 5) {
+      clicks = 0;
+      tilt();
+    }
+  });
+
+  function tilt() {
+    tilted = true;
+    document.body.style.transition = 'transform 3s cubic-bezier(.2,.8,.3,1)';
+    document.body.style.transformOrigin = 'center top';
+    document.body.style.transform = 'rotate(12deg) translateY(8vh)';
+
+    // falling toast
+    const t = document.getElementById('toast');
+    const orig = t.textContent;
+    t.textContent = 'Falling into the void...';
+    t.classList.add('show');
+
+    setTimeout(() => {
+      document.body.style.transition = 'transform 1.5s ease-in-out';
+      document.body.style.transform = '';
+      setTimeout(() => {
+        document.body.style.transition = '';
+        tilted = false;
+        t.classList.remove('show');
+        t.textContent = orig;
+      }, 1600);
+    }, 3200);
+  }
+})();
+
+/* ── EASTER EGG 5: Hover status dot 5s → creeper face appears ─── */
+(function() {
+  const dot = document.getElementById('sdot');
+  let timer = null;
+  let face = null;
+
+  dot.addEventListener('mouseenter', () => {
+    timer = setTimeout(showCreeper, 5000);
+  });
+  dot.addEventListener('mouseleave', () => {
+    clearTimeout(timer);
+  });
+
+  function showCreeper() {
+    if (face) return;
+    face = document.createElement('div');
+    face.innerHTML = `<svg width="32" height="32" viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg" style="image-rendering:pixelated">
+      <rect width="8" height="8" fill="#3a7a3a"/>
+      <rect x="1" y="2" width="2" height="2" fill="#000"/>
+      <rect x="5" y="2" width="2" height="2" fill="#000"/>
+      <rect x="3" y="4" width="2" height="1" fill="#000"/>
+      <rect x="2" y="5" width="4" height="1" fill="#000"/>
+      <rect x="2" y="6" width="1" height="1" fill="#000"/>
+      <rect x="5" y="6" width="1" height="1" fill="#000"/>
+    </svg>`;
+    face.style.cssText = `
+      display:inline-flex; align-items:center; margin-left:8px;
+      opacity:0; transition:opacity .4s;
+      vertical-align:middle;
+    `;
+    dot.parentNode.insertBefore(face, dot.nextSibling);
+    requestAnimationFrame(() => face.style.opacity = '1');
+
+    setTimeout(() => {
+      face.style.opacity = '0';
+      setTimeout(() => { face && face.remove(); face = null; }, 500);
+    }, 3000);
+  }
+})();
+
+/* ── EASTER EGG 15: Click "Vanilla Structures" 4x → end city rises ── */
+(function() {
+  let clicks = 0;
+  // find the Vanilla Structures feat-card
+  const cards = document.querySelectorAll('.feat-card');
+  let card = null;
+  cards.forEach(c => { if (c.querySelector('.feat-title')?.textContent.includes('Vanilla')) card = c; });
+  if (!card) return;
+
+  card.style.cursor = 'pointer';
+  card.style.overflow = 'hidden';
+  card.style.position = 'relative';
+
+  const SVG = `<svg id="endcity-svg" viewBox="0 0 40 60" xmlns="http://www.w3.org/2000/svg"
+    style="position:absolute;bottom:-70px;left:50%;transform:translateX(-50%);
+           width:56px;height:84px;image-rendering:pixelated;pointer-events:none;
+           transition:bottom 1.4s cubic-bezier(.2,.8,.3,1);opacity:.85;">
+    <!-- main tower -->
+    <rect x="12" y="20" width="16" height="40" fill="#c79ee8"/>
+    <!-- tower top battlements -->
+    <rect x="10" y="16" width="4"  height="6"  fill="#b87de0"/>
+    <rect x="16" y="14" width="4"  height="8"  fill="#b87de0"/>
+    <rect x="22" y="16" width="4"  height="6"  fill="#b87de0"/>
+    <rect x="26" y="18" width="6"  height="4"  fill="#b87de0"/>
+    <rect x="8"  y="18" width="6"  height="4"  fill="#b87de0"/>
+    <!-- windows -->
+    <rect x="17" y="26" width="6" height="6" fill="#1a0030"/>
+    <rect x="17" y="38" width="6" height="6" fill="#1a0030"/>
+    <!-- side struts -->
+    <rect x="8"  y="30" width="4" height="20" fill="#a06acc"/>
+    <rect x="28" y="30" width="4" height="20" fill="#a06acc"/>
+    <!-- purpur detail -->
+    <rect x="12" y="22" width="2" height="2" fill="#d4a8f0"/>
+    <rect x="26" y="22" width="2" height="2" fill="#d4a8f0"/>
+    <!-- glow -->
+    <rect x="18" y="10" width="4" height="4" fill="#ffe066" opacity=".9"/>
+  </svg>`;
+
+  card.insertAdjacentHTML('beforeend', SVG);
+  const city = card.querySelector('#endcity-svg');
+
+  card.addEventListener('click', () => {
+    clicks++;
+    // small nudge on each click
+    card.style.transition = 'transform .08s';
+    card.style.transform = 'scale(1.04)';
+    setTimeout(() => { card.style.transform = ''; }, 100);
+
+    if (clicks === 4) {
+      city.style.bottom = '0px';
+      // glow pulse on the card
+      card.style.boxShadow = '0 0 24px #b87de0';
+      setTimeout(() => { card.style.boxShadow = ''; }, 1800);
+    }
+  });
+})();
+
+/* ── EASTER EGG 18: Hover all 6 gallery images → secret 7th slot ── */
+(function() {
+  const grid = document.querySelector('.gal-grid');
+  if (!grid) return;
+  const imgs = Array.from(grid.querySelectorAll('img'));
+  const hovered = new Set();
+  let revealed = false;
+
+  imgs.forEach((img, i) => {
+    img.addEventListener('mouseenter', () => {
+      hovered.add(i);
+      if (hovered.size === imgs.length && !revealed) {
+        revealed = true;
+        revealSlot();
+      }
+    });
+  });
+
+  // also track on mobile via touchstart
+  imgs.forEach((img, i) => {
+    img.addEventListener('touchstart', () => {
+      hovered.add(i);
+      if (hovered.size === imgs.length && !revealed) {
+        revealed = true;
+        revealSlot();
+      }
+    }, {passive:true});
+  });
+
+  function revealSlot() {
+    const slot = document.createElement('div');
+    slot.style.cssText = `
+      position:relative; overflow:hidden; cursor:pointer;
+      background:#0a0a0a; aspect-ratio:16/9;
+      display:flex; align-items:center; justify-content:center;
+      border:2px solid rgba(255,255,255,.08);
+      opacity:0; transition:opacity .8s;
+    `;
+
+    // the ??? text
+    const label = document.createElement('div');
+    label.textContent = '???';
+    label.style.cssText = `
+      font-family:'Press Start 2P',monospace;
+      font-size:clamp(.7rem,2.5vw,1.4rem);
+      color:rgba(255,255,255,.15);
+      letter-spacing:.2em;
+      transition: color .4s, text-shadow .4s;
+      user-select:none;
+    `;
+    slot.appendChild(label);
+
+    // scanline overlay
+    const scan = document.createElement('div');
+    scan.style.cssText = `
+      position:absolute;inset:0;pointer-events:none;
+      background:repeating-linear-gradient(
+        to bottom,
+        transparent 0px, transparent 3px,
+        rgba(0,0,0,.18) 3px, rgba(0,0,0,.18) 4px
+      );
+    `;
+    slot.appendChild(scan);
+
+    // hovering the slot brightens the ???
+    slot.addEventListener('mouseenter', () => {
+      label.style.color = 'rgba(255,255,255,.55)';
+      label.style.textShadow = '0 0 18px #fff';
+    });
+    slot.addEventListener('mouseleave', () => {
+      label.style.color = 'rgba(255,255,255,.15)';
+      label.style.textShadow = '';
+    });
+
+    // clicking it: static burst then a toast
+    slot.addEventListener('click', () => {
+      slot.style.background = '#fff';
+      slot.style.transition = 'background .05s';
+      setTimeout(() => {
+        slot.style.background = '#0a0a0a';
+        const t = document.getElementById('toast');
+        const orig = t.textContent;
+        t.textContent = 'Nothing here. Yet.';
+        t.classList.add('show');
+        setTimeout(() => { t.classList.remove('show'); t.textContent = orig; }, 2200);
+      }, 60);
+    });
+
+    grid.appendChild(slot);
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => { slot.style.opacity = '1'; });
+    });
+  }
+})();
+
+/* ── EASTER EGG 11: Click "No cheating." 3x → fake ban screen ── */
+(function() {
+  let clicks = 0;
+  const ruleEl = document.querySelector('.rule-only');
+
+  ruleEl.style.cursor = 'pointer';
+  ruleEl.addEventListener('click', () => {
+    clicks++;
+    if (clicks >= 3) {
+      clicks = 0;
+      showBan();
+    }
+  });
+
+  function showBan() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position:fixed; inset:0; z-index:99999;
+      background:#c6503a;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center; padding:40px;
+      font-family:'Press Start 2P',monospace;
+      animation: banIn .15s ease-out;
+    `;
+
+    overlay.innerHTML = `
+      <style>@keyframes banIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}</style>
+      <div style="font-size:clamp(.9rem,3vw,1.6rem);color:#fff;margin-bottom:1.6rem;line-height:1.8;">
+        You have been banned<br>from this server.
+      </div>
+      <div style="font-size:clamp(.45rem,1.5vw,.7rem);color:rgba(255,255,255,.75);margin-bottom:.6rem;">
+        Reason:
+      </div>
+      <div style="font-size:clamp(.55rem,1.8vw,.9rem);color:#ffe066;margin-bottom:2.4rem;line-height:1.8;">
+        Cheating
+      </div>
+      <div style="font-size:clamp(.35rem,1vw,.5rem);color:rgba(255,255,255,.55);margin-bottom:2.4rem;line-height:2;">
+        Appeal at: thfproject.xyz/ban-appeal
+      </div>
+      <button id="ban-dismiss" style="
+        font-family:'Press Start 2P',monospace;
+        font-size:clamp(.4rem,1.2vw,.55rem);
+        background:#fff; color:#c6503a;
+        border:none; border-radius:2px;
+        padding:.8rem 1.6rem; cursor:pointer;
+      ">Back to Title Screen</button>
+    `;
+
+    document.body.appendChild(overlay);
+    document.getElementById('ban-dismiss').addEventListener('click', () => {
+      overlay.style.transition = 'opacity .3s';
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.remove(), 350);
+    });
+  }
+})();
+</script>
 </body>
 </html>
