@@ -3,10 +3,11 @@
  *
  * Architecture: Class-based ES6+
  *  - ThfApp        : Application bootstrap and event delegation
- *  - Carousel      : Hero image slideshow with keyboard & dot navigation
- *  - ScrollManager : Throttled scroll handler (navbar, parallax, reveal)
+ *  - Starfield     : Animated twinkling background canvas
+ *  - ScrollManager : Throttled scroll handler (navbar glass effect)
  *  - Toast         : Copy-to-clipboard feedback overlay
  *  - StatusChecker : Periodic Minecraft server status polling
+ *  - EasterEggs    : Hidden interactive surprises
  */
 
 'use strict';
@@ -18,29 +19,13 @@
 
 /** @type {Object} Site-wide configuration constants */
 const CONFIG = {
-  carousel: {
-    /** Auto-advance interval in milliseconds */
-    interval: 4500,
-    images: [
-      'img/1.webp',
-      'img/2.webp',
-      'img/3.webp',
-      'img/4.webp',
-      'img/5.webp',
-      'img/6.webp',
-    ],
+  starfield: {
+    /** Number of twinkling stars drawn on the canvas */
+    count: 220,
   },
   scroll: {
     /** Scroll distance (px) before navbar gains glass effect */
     navbarThreshold: 30,
-    /** Fraction of hero height at which parallax fade is complete */
-    parallaxFadeFraction: 0.55,
-    /** Multiplier for hero-overlay opacity reduction */
-    overlayFadeFactor: 0.5,
-    /** Multiplier for hero-content opacity reduction */
-    contentFadeFactor: 2.5,
-    /** Fraction of viewport height used as reveal threshold */
-    revealThreshold: 0.9,
     /** Minimum ms between scroll handler invocations (throttle) */
     throttleMs: 16,
   },
@@ -58,25 +43,13 @@ const CONFIG = {
     pollInterval: 30000,
   },
   selectors: {
-    navbar:      '#navbar',
-    burgerBtn:   '#burgerbtn',
-    mobileNav:   '#mobnav',
-    hero:        '#hero',
-    heroOverlay: '#hero-overlay',
-    heroContent: '#hero-content',
-    navDots:     '#nav-dots',
-    copyToast:   '#copy-toast',
-    statusDot:   '#status-dot',
-    playerText:  '#player-text',
-    revealEls: [
-      '#info-text',
-      '#sc1',
-      '#sc2',
-      '#sc3',
-      '.fcard',
-      '#join-cards',
-      '#rules-box',
-    ],
+    navbar:     '#navbar',
+    burgerBtn:  '#burgerbtn',
+    mobileNav:  '#mobnav',
+    stars:      '#stars',
+    copyToast:  '#copy-toast',
+    statusDot:  '#status-dot',
+    playerText: '#player-text',
   },
 };
 
@@ -114,101 +87,67 @@ function throttle(fn, limitMs) {
 }
 
 /* ─────────────────────────────────────────────
-   CAROUSEL
+   STARFIELD
 ───────────────────────────────────────────── */
 
-/**
- * Hero image carousel with auto-advance, dot navigation and
- * keyboard left/right arrow support.
- */
-class Carousel {
-  /** @type {string[]} */ #images;
-  /** @type {number} */   #interval;
-  /** @type {Element|null} */ #heroEl;
-  /** @type {Element|null} */ #dotsWrap;
-  /** @type {HTMLElement[]} */ #slides = [];
-  /** @type {HTMLElement[]} */ #dotEls = [];
-  /** @type {number} */ #current = 0;
-  /** @type {number|null} */ #timer = null;
+/** Animated twinkling starfield painted on a fixed full-page canvas. */
+class Starfield {
+  /** @type {HTMLCanvasElement|null} */          #canvas;
+  /** @type {CanvasRenderingContext2D|null} */   #ctx;
+  /** @type {Array<Object>} */                   #stars = [];
+  /** @type {number} */                          #frame = 0;
 
   constructor() {
-    this.#images   = CONFIG.carousel.images;
-    this.#interval = CONFIG.carousel.interval;
-    this.#heroEl   = qs(CONFIG.selectors.hero);
-    this.#dotsWrap = qs(CONFIG.selectors.navDots);
+    this.#canvas = qs(CONFIG.selectors.stars);
+    this.#ctx    = this.#canvas?.getContext('2d') ?? null;
   }
 
-  /**
-   * Navigate to a specific slide index.
-   * @param {number} index - Target slide index
-   */
-  goTo(index) {
-    if (!this.#slides.length) return;
-    this.#slides[this.#current].classList.remove('active');
-    this.#dotEls[this.#current].classList.remove('active');
-    this.#dotEls[this.#current].setAttribute('aria-selected', 'false');
-    this.#current = ((index % this.#slides.length) + this.#slides.length) % this.#slides.length;
-    this.#slides[this.#current].classList.add('active');
-    this.#dotEls[this.#current].classList.add('active');
-    this.#dotEls[this.#current].setAttribute('aria-selected', 'true');
+  /** Match the canvas's pixel size to the viewport width and full page height. */
+  #resize() {
+    this.#canvas.width  = window.innerWidth;
+    this.#canvas.height = document.body.scrollHeight;
   }
 
-  /** Advance to the next slide. */
-  #next() {
-    this.goTo(this.#current + 1);
+  /** (Re)seed the star field with random positions, sizes and twinkle phases. */
+  #seed() {
+    this.#stars = Array.from({ length: CONFIG.starfield.count }, () => ({
+      x:     Math.random() * this.#canvas.width,
+      y:     Math.random() * this.#canvas.height,
+      r:     Math.random() * 1.4 + 0.3,
+      alpha: Math.random() * 0.7 + 0.2,
+      speed: Math.random() * 0.4 + 0.05,
+      phase: Math.random() * Math.PI * 2,
+    }));
   }
 
-  /** Start the auto-advance timer. */
-  #startTimer() {
-    this.#timer = setInterval(() => this.#next(), this.#interval);
-  }
+  /** Render one animation frame and schedule the next. */
+  #draw = () => {
+    this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
+    this.#frame++;
+    this.#stars.forEach((s) => {
+      const twinkle = s.alpha * (0.6 + 0.4 * Math.sin(this.#frame * s.speed * 0.04 + s.phase));
+      this.#ctx.beginPath();
+      this.#ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      this.#ctx.fillStyle = `rgba(255,255,255,${twinkle.toFixed(3)})`;
+      this.#ctx.fill();
+    });
+    requestAnimationFrame(this.#draw);
+  };
 
-  /** @returns {HTMLElement[]} Current slide elements */
-  getSlides() { return this.#slides; }
-
-  /** @returns {number} Index of the currently active slide */
-  getCurrent() { return this.#current; }
-
-  /** Build slide and dot elements, attach keyboard listener, then start the timer. */
+  /** Size the canvas, seed the stars, and start the twinkle animation loop. */
   init() {
-    if (!this.#heroEl || !this.#dotsWrap) return;
+    if (!this.#canvas || !this.#ctx) return;
 
-    this.#slides = this.#images.map((src, i) => {
-      const div = document.createElement('div');
-      div.className = `slide${i === 0 ? ' active' : ''}`;
-      div.style.backgroundImage = `url(${src})`;
-      this.#heroEl.insertBefore(div, this.#heroEl.firstChild);
-      return div;
+    this.#resize();
+    this.#seed();
+
+    window.addEventListener('resize', () => {
+      this.#resize();
+      this.#stars.forEach((s) => { s.x = Math.random() * this.#canvas.width; });
     });
+    new ResizeObserver(() => this.#resize()).observe(document.body);
 
-    this.#dotEls = this.#images.map((_, i) => {
-      const dot = document.createElement('div');
-      dot.className = `ndot${i === 0 ? ' active' : ''}`;
-      dot.setAttribute('role', 'tab');
-      dot.setAttribute('tabindex', '0');
-      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
-      dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-      dot.addEventListener('click', () => this.goTo(i));
-      dot.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          this.goTo(i);
-        }
-      });
-      this.#dotsWrap.appendChild(dot);
-      return dot;
-    });
-
-    document.addEventListener('keydown', (e) => {
-      // Only handle arrow keys when no interactive element has focus,
-      // to avoid conflicting with form inputs, textareas, etc.
-      const tag = document.activeElement?.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
-      if (e.key === 'ArrowLeft')       this.goTo(this.#current - 1);
-      else if (e.key === 'ArrowRight') this.#next();
-    });
-
-    this.#startTimer();
+    this.#draw();
   }
 }
 
@@ -216,21 +155,12 @@ class Carousel {
    SCROLL MANAGER
 ───────────────────────────────────────────── */
 
-/**
- * Handles all scroll-driven behaviour:
- *  - Navbar glass effect
- *  - Hero parallax / fade-out
- *  - Reveal animations for sections entering the viewport
- */
+/** Toggles the navbar's glass effect once the page has scrolled past a threshold. */
 class ScrollManager {
   /** @type {Element|null} */ #navbar;
-  /** @type {Element|null} */ #heroOverlay;
-  /** @type {Element|null} */ #heroContent;
 
   constructor() {
-    this.#navbar      = qs(CONFIG.selectors.navbar);
-    this.#heroOverlay = qs(CONFIG.selectors.heroOverlay);
-    this.#heroContent = qs(CONFIG.selectors.heroContent);
+    this.#navbar = qs(CONFIG.selectors.navbar);
   }
 
   /** Toggle the glass-effect class on the navbar. */
@@ -239,65 +169,11 @@ class ScrollManager {
     this.#navbar.classList.toggle('scrolled', window.scrollY > CONFIG.scroll.navbarThreshold);
   }
 
-  /**
-   * Apply parallax fade to the active hero slide, overlay, and content.
-   * @param {HTMLElement[]} slides - Array of slide elements
-   * @param {Element|null} heroEl  - Hero section element
-   */
-  #updateParallax(slides, heroEl) {
-    if (!heroEl) return;
-    const { parallaxFadeFraction, overlayFadeFactor, contentFadeFactor } = CONFIG.scroll;
-    const progress = Math.min(window.scrollY / (heroEl.offsetHeight * parallaxFadeFraction), 1);
-
-    slides.forEach((s) => {
-      s.style.opacity = s.classList.contains('active') ? String(1 - progress) : '0';
-    });
-
-    if (this.#heroOverlay) {
-      this.#heroOverlay.style.opacity = String(1 - progress * overlayFadeFactor);
-    }
-    if (this.#heroContent) {
-      this.#heroContent.style.opacity = String(Math.max(0, 1 - progress * contentFadeFactor));
-    }
-  }
-
-  /** Add the "visible" class to any tracked elements that have entered the viewport. */
-  checkVisible() {
-    const threshold = window.innerHeight * CONFIG.scroll.revealThreshold;
-
-    CONFIG.selectors.revealEls.forEach((selector) => {
-      try {
-        document.querySelectorAll(selector).forEach((el) => {
-          if (el.getBoundingClientRect().top < threshold) {
-            el.classList.add('visible');
-          }
-        });
-      } catch (err) {
-        console.warn(`[thf] Invalid reveal selector: ${selector}`, err);
-      }
-    });
-  }
-
-  /**
-   * Attach the (throttled) scroll listener and run an initial check.
-   * @param {Carousel} carousel - Carousel instance to read slides from
-   */
-  init(carousel) {
-    const heroEl = qs(CONFIG.selectors.hero);
-    const slides = carousel.getSlides();
-
-    const onScroll = throttle(() => {
-      this.#updateNavbar();
-      this.#updateParallax(slides, heroEl);
-      this.checkVisible();
-    }, CONFIG.scroll.throttleMs);
-
+  /** Attach the (throttled) scroll listener and run an initial check. */
+  init() {
+    const onScroll = throttle(() => this.#updateNavbar(), CONFIG.scroll.throttleMs);
     window.addEventListener('scroll', onScroll, { passive: true });
-
-    // Run once on load so elements already in view animate immediately.
     this.#updateNavbar();
-    this.#updateParallax(slides, heroEl);
-    this.checkVisible();
   }
 }
 
@@ -588,8 +464,8 @@ class EasterEggs {
       position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a;
       aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
       opacity:0; transition:opacity .8s, color .4s;
-      font-family:'Space Mono',monospace; font-size:clamp(.9rem,2.5vw,1.4rem);
-      color:rgba(240,236,227,.15); letter-spacing:.3em;
+      font-family:'Press Start 2P',monospace; font-size:clamp(.7rem,2.5vw,1.4rem);
+      color:rgba(240,236,227,.15); letter-spacing:.2em;
     `;
     slot.textContent = '???';
     slot.addEventListener('mouseenter', () => { slot.style.color = 'rgba(240,236,227,.55)'; });
@@ -616,21 +492,21 @@ class EasterEggs {
       overlay.style.cssText = `
         position:fixed; inset:0; z-index:99999; background:#c6503a;
         display:flex; flex-direction:column; align-items:center; justify-content:center;
-        text-align:center; padding:40px; font-family:'Syne',sans-serif;
+        text-align:center; padding:40px; font-family:'Press Start 2P',monospace;
       `;
       overlay.innerHTML = `
-        <div style="font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;color:#fff;margin-bottom:1.4rem;line-height:1.2;">
+        <div style="font-size:clamp(.9rem,3vw,1.6rem);color:#fff;margin-bottom:1.6rem;line-height:1.8;">
           You have been banned<br>from this server.
         </div>
-        <div style="font-family:'Space Mono',monospace;font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:.5rem;">
+        <div style="font-size:clamp(.45rem,1.5vw,.7rem);color:rgba(255,255,255,.75);margin-bottom:.6rem;">
           Reason:
         </div>
-        <div style="font-family:'Space Mono',monospace;font-size:1rem;color:#ffe066;margin-bottom:2.2rem;">
+        <div style="font-size:clamp(.55rem,1.8vw,.9rem);color:#ffe066;margin-bottom:2.4rem;line-height:1.8;">
           Cheating
         </div>
         <button id="ban-dismiss" style="
-          font-family:'Syne',sans-serif; font-weight:700; font-size:.85rem;
-          background:#fff; color:#c6503a; border:none; border-radius:4px;
+          font-family:'Press Start 2P',monospace; font-size:clamp(.4rem,1.2vw,.55rem);
+          background:#fff; color:#c6503a; border:none; border-radius:2px;
           padding:.8rem 1.6rem; cursor:pointer;">Back to Title Screen</button>
       `;
       document.body.appendChild(overlay);
@@ -652,13 +528,13 @@ class EasterEggs {
  * global event delegation (copy-to-clipboard).
  */
 class ThfApp {
-  /** @type {Carousel} */       #carousel;
+  /** @type {Starfield} */      #starfield;
   /** @type {ScrollManager} */  #scrollManager;
   /** @type {Toast} */          #toast;
   /** @type {StatusChecker} */  #statusChecker;
 
   constructor() {
-    this.#carousel      = new Carousel();
+    this.#starfield     = new Starfield();
     this.#scrollManager = new ScrollManager();
     this.#toast         = new Toast();
     this.#statusChecker = new StatusChecker();
@@ -719,8 +595,8 @@ class ThfApp {
 
   /** Initialise all modules. */
   init() {
-    this.#carousel.init();
-    this.#scrollManager.init(this.#carousel);
+    this.#starfield.init();
+    this.#scrollManager.init();
     this.#statusChecker.init();
     this.#bindCopyDelegation();
     this.#bindMobileNav();

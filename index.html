@@ -9,13 +9,14 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="index.css" />
   <script src="index.js" defer></script>
 </head>
 <body>
 
+<canvas id="stars"></canvas>
 <div id="copy-toast" class="copy-toast">Copied!</div>
 
 <!-- NAVBAR -->
@@ -43,10 +44,6 @@
 
 <!-- HERO -->
 <section id="hero">
-  <div id="hero-overlay"></div>
-  <div id="hero-grid"></div>
-  <div id="hero-fade"></div>
-
   <div id="hero-content">
     <h1 class="wordmark hero-logo">
       <span class="p1">T</span><span class="p2">H</span><span class="p3">F</span><span class="p4">project</span>
@@ -91,8 +88,6 @@
       </a>
     </div>
   </div>
-
-  <div id="nav-dots" role="tablist" aria-label="Hero image carousel"></div>
 
   <a href="#about" class="scroll-nudge" aria-label="Scroll down">
     <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
