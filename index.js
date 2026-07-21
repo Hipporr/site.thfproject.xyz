@@ -59,6 +59,8 @@ const CONFIG = {
   },
   selectors: {
     navbar:      '#navbar',
+    burgerBtn:   '#burgerbtn',
+    mobileNav:   '#mobnav',
     hero:        '#hero',
     heroOverlay: '#hero-overlay',
     heroContent: '#hero-content',
@@ -398,6 +400,250 @@ class StatusChecker {
 }
 
 /* ─────────────────────────────────────────────
+   EASTER EGGS
+───────────────────────────────────────────── */
+
+/** Hidden interactive surprises scattered through the page. */
+class EasterEggs {
+  /** Wire up every hidden interaction. Each is self-contained and no-ops if its target is missing. */
+  init() {
+    this.#logoGlitch();
+    this.#creeperPeek();
+    this.#itemDrop();
+    this.#endCityRise();
+    this.#secretGallerySlot();
+    this.#banScreen();
+  }
+
+  /** Flash a toast reusing the site's own copy-toast element. */
+  #flashToast(message) {
+    const el = qs(CONFIG.selectors.copyToast);
+    if (!el) return;
+    el.textContent = message;
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), CONFIG.toast.displayMs);
+  }
+
+  /** Click the hero wordmark 10x for a glitch flicker + chiptune ding. */
+  #logoGlitch() {
+    const logo = qs('.hero-logo');
+    if (!logo) return;
+    const COLORS = ['#e04918', '#4ade80', '#38bdf8', '#f5c400', '#ff00ff', '#00ffff', '#ffffff'];
+    let clicks = 0;
+    logo.style.cursor = 'pointer';
+
+    logo.addEventListener('click', () => {
+      if (++clicks < 10) return;
+      clicks = 0;
+      let i = 0;
+      const iv = setInterval(() => {
+        logo.style.filter = `hue-rotate(${Math.random() * 360}deg) brightness(${1 + Math.random() * 2})`;
+        logo.style.transform = `skewX(${(Math.random() - 0.5) * 18}deg)`;
+        logo.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        if (++i > 18) {
+          clearInterval(iv);
+          logo.style.filter = '';
+          logo.style.transform = '';
+          logo.style.color = '';
+        }
+      }, 70);
+
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(220, ctx.currentTime + 0.4);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.start(); osc.stop(ctx.currentTime + 0.5);
+      } catch { /* AudioContext unavailable — skip the ding */ }
+    });
+  }
+
+  /** Hover the status dot for 5s to reveal a pixel creeper face beside it. */
+  #creeperPeek() {
+    const dot = qs(CONFIG.selectors.statusDot);
+    if (!dot) return;
+    let timer = null;
+    let face = null;
+
+    dot.addEventListener('mouseenter', () => { timer = setTimeout(reveal, 5000); });
+    dot.addEventListener('mouseleave', () => clearTimeout(timer));
+
+    function reveal() {
+      if (face) return;
+      face = document.createElement('span');
+      face.innerHTML = `<svg width="20" height="20" viewBox="0 0 8 8" style="image-rendering:pixelated">
+        <rect width="8" height="8" fill="#3a7a3a"/><rect x="1" y="2" width="2" height="2" fill="#000"/>
+        <rect x="5" y="2" width="2" height="2" fill="#000"/><rect x="3" y="4" width="2" height="1" fill="#000"/>
+        <rect x="2" y="5" width="4" height="1" fill="#000"/><rect x="2" y="6" width="1" height="1" fill="#000"/>
+        <rect x="5" y="6" width="1" height="1" fill="#000"/></svg>`;
+      face.style.cssText = 'display:inline-flex;margin-left:8px;opacity:0;transition:opacity .4s;vertical-align:middle;';
+      dot.parentNode.insertBefore(face, dot.nextSibling);
+      requestAnimationFrame(() => { face.style.opacity = '1'; });
+      setTimeout(() => {
+        face.style.opacity = '0';
+        setTimeout(() => { face?.remove(); face = null; }, 500);
+      }, 3000);
+    }
+  }
+
+  /** Click the "Item Drop" stat card 5x to watch a random item fall down the page. */
+  #itemDrop() {
+    const card = qs('#sc2');
+    if (!card) return;
+    const ITEMS = [
+      'diamond', 'iron_ingot', 'gold_ingot', 'emerald', 'netherite_ingot',
+      'totem_of_undying', 'elytra', 'ender_pearl', 'tnt', 'gravel',
+    ];
+    const BASE       = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/';
+    const BLOCK_BASE = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/';
+    const BLOCK_ITEMS = ['tnt', 'gravel'];
+    let clicks = 0;
+    card.style.cursor = 'pointer';
+
+    card.addEventListener('click', () => {
+      if (++clicks < 5) return;
+      clicks = 0;
+      const name = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+      const src  = (BLOCK_ITEMS.includes(name) ? BLOCK_BASE : BASE) + name + '.png';
+
+      const el = document.createElement('img');
+      el.src = src;
+      el.style.cssText = `
+        position:fixed; z-index:9999; pointer-events:none;
+        width:44px; height:44px; image-rendering:pixelated;
+        left:${Math.random() * 80 + 10}vw; top:-60px;
+        transition: top 2.2s cubic-bezier(.2,.8,.4,1), opacity .4s;
+      `;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => { el.style.top = '95vh'; });
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 500);
+      }, 2000);
+    });
+  }
+
+  /** Click the "Vanilla Structures" feature card 4x to raise an end city from behind it. */
+  #endCityRise() {
+    const card = Array.from(document.querySelectorAll('.fcard'))
+      .find((c) => c.querySelector('h3')?.textContent.includes('Vanilla'));
+    if (!card) return;
+
+    card.style.cursor   = 'pointer';
+    card.style.position = 'relative';
+    card.style.overflow = 'hidden';
+    card.insertAdjacentHTML('beforeend', `<svg id="endcity-svg" viewBox="0 0 40 60" style="
+        position:absolute; bottom:-70px; left:50%; transform:translateX(-50%);
+        width:52px; height:78px; pointer-events:none; opacity:.85; image-rendering:pixelated;
+        transition:bottom 1.4s cubic-bezier(.2,.8,.3,1);">
+      <rect x="12" y="20" width="16" height="40" fill="#c79ee8"/>
+      <rect x="10" y="16" width="4" height="6" fill="#b87de0"/>
+      <rect x="16" y="14" width="4" height="8" fill="#b87de0"/>
+      <rect x="22" y="16" width="4" height="6" fill="#b87de0"/>
+      <rect x="17" y="26" width="6" height="6" fill="#1a0030"/>
+      <rect x="17" y="38" width="6" height="6" fill="#1a0030"/>
+      <rect x="18" y="10" width="4" height="4" fill="#ffe066" opacity=".9"/>
+    </svg>`);
+    const city = card.querySelector('#endcity-svg');
+
+    let clicks = 0;
+    card.addEventListener('click', () => {
+      if (++clicks !== 4) return;
+      city.style.bottom = '0px';
+      card.style.boxShadow = '0 0 24px #b87de0';
+      setTimeout(() => { card.style.boxShadow = ''; }, 1800);
+    });
+  }
+
+  /** Hover (or tap) all 6 gallery shots to reveal a mysterious 7th slot. */
+  #secretGallerySlot() {
+    const grid = qs('.shot-grid');
+    if (!grid) return;
+    const imgs = Array.from(grid.querySelectorAll('img'));
+    const hovered = new Set();
+    let revealed = false;
+
+    const mark = (i) => {
+      hovered.add(i);
+      if (hovered.size === imgs.length && !revealed) {
+        revealed = true;
+        this.#revealSecretSlot(grid);
+      }
+    };
+    imgs.forEach((img, i) => {
+      img.addEventListener('mouseenter', () => mark(i));
+      img.addEventListener('touchstart', () => mark(i), { passive: true });
+    });
+  }
+
+  /** Append and fade in the secret gallery slot. */
+  #revealSecretSlot(grid) {
+    const slot = document.createElement('div');
+    slot.style.cssText = `
+      position:relative; overflow:hidden; cursor:pointer; background:#0a0a0a;
+      aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity .8s, color .4s;
+      font-family:'Space Mono',monospace; font-size:clamp(.9rem,2.5vw,1.4rem);
+      color:rgba(240,236,227,.15); letter-spacing:.3em;
+    `;
+    slot.textContent = '???';
+    slot.addEventListener('mouseenter', () => { slot.style.color = 'rgba(240,236,227,.55)'; });
+    slot.addEventListener('mouseleave', () => { slot.style.color = 'rgba(240,236,227,.15)'; });
+    slot.addEventListener('click', () => this.#flashToast('Nothing here. Yet.'));
+
+    grid.appendChild(slot);
+    requestAnimationFrame(() => requestAnimationFrame(() => { slot.style.opacity = '1'; }));
+  }
+
+  /** Click the "cheating" rule 3x for a fake ban screen. */
+  #banScreen() {
+    const rule = Array.from(document.querySelectorAll('.rule-item.no'))
+      .find((r) => r.textContent.toLowerCase().includes('cheating'));
+    if (!rule) return;
+    rule.style.cursor = 'pointer';
+    let clicks = 0;
+
+    rule.addEventListener('click', () => {
+      if (++clicks < 3) return;
+      clicks = 0;
+
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position:fixed; inset:0; z-index:99999; background:#c6503a;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        text-align:center; padding:40px; font-family:'Syne',sans-serif;
+      `;
+      overlay.innerHTML = `
+        <div style="font-size:clamp(1.4rem,4vw,2.4rem);font-weight:900;color:#fff;margin-bottom:1.4rem;line-height:1.2;">
+          You have been banned<br>from this server.
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:.8rem;color:rgba(255,255,255,.75);margin-bottom:.5rem;">
+          Reason:
+        </div>
+        <div style="font-family:'Space Mono',monospace;font-size:1rem;color:#ffe066;margin-bottom:2.2rem;">
+          Cheating
+        </div>
+        <button id="ban-dismiss" style="
+          font-family:'Syne',sans-serif; font-weight:700; font-size:.85rem;
+          background:#fff; color:#c6503a; border:none; border-radius:4px;
+          padding:.8rem 1.6rem; cursor:pointer;">Back to Title Screen</button>
+      `;
+      document.body.appendChild(overlay);
+      overlay.querySelector('#ban-dismiss').addEventListener('click', () => {
+        overlay.style.transition = 'opacity .3s';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 300);
+      });
+    });
+  }
+}
+
+/* ─────────────────────────────────────────────
    APP BOOTSTRAP
 ───────────────────────────────────────────── */
 
@@ -434,17 +680,41 @@ class ThfApp {
   }
 
   /**
-   * Attach delegated click handler for all [data-copy-text] elements.
-   * Replaces the previous global copyText() function.
+   * Attach delegated click + keyboard (Enter/Space) handlers for all
+   * [data-copy-text] elements. Replaces the previous global copyText() function.
    */
   #bindCopyDelegation() {
-    document.addEventListener('click', (e) => {
+    const trigger = (e) => {
       const target = e.target.closest('[data-copy-text]');
       if (!target) return;
-      const text  = target.dataset.copyText;
-      const label = target.dataset.copyLabel;
-      this.#copyText(text, label);
+      this.#copyText(target.dataset.copyText, target.dataset.copyLabel);
+    };
+    document.addEventListener('click', trigger);
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      if (!e.target.closest('[data-copy-text]')) return;
+      e.preventDefault();
+      trigger(e);
     });
+  }
+
+  /** Wire up the hamburger button to open/close the mobile nav panel. */
+  #bindMobileNav() {
+    const burger = qs(CONFIG.selectors.burgerBtn);
+    const panel  = qs(CONFIG.selectors.mobileNav);
+    if (!burger || !panel) return;
+
+    burger.addEventListener('click', () => {
+      const open = panel.classList.toggle('open');
+      burger.classList.toggle('open', open);
+      burger.setAttribute('aria-expanded', String(open));
+    });
+
+    panel.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+      panel.classList.remove('open');
+      burger.classList.remove('open');
+      burger.setAttribute('aria-expanded', 'false');
+    }));
   }
 
   /** Initialise all modules. */
@@ -453,6 +723,8 @@ class ThfApp {
     this.#scrollManager.init(this.#carousel);
     this.#statusChecker.init();
     this.#bindCopyDelegation();
+    this.#bindMobileNav();
+    new EasterEggs().init();
   }
 }
 
