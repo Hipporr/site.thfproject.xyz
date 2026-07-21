@@ -491,10 +491,9 @@ class EasterEggs {
     requestAnimationFrame(() => requestAnimationFrame(() => { slot.style.opacity = '1'; }));
   }
 
-  /** Click the "cheating" rule 3x for a fake ban screen. */
+  /** Click the "No cheating." rule 3x for a fake ban screen. */
   #banScreen() {
-    const rule = Array.from(document.querySelectorAll('.rule-item.no'))
-      .find((r) => r.textContent.toLowerCase().includes('cheating'));
+    const rule = qs('.rule-only');
     if (!rule) return;
     rule.style.cursor = 'pointer';
     let clicks = 0;
