@@ -320,6 +320,10 @@ section { padding: 96px 0; }
   font-size: 1rem; font-weight: 400;
   color: rgba(240,236,227,0.68); max-width: 580px; line-height: 1.8;
 }
+.sec-title {
+  display: flex;
+  justify-content: center;
+}
 
 /* ─── ABOUT ─── */
 #about { background: var(--ash); position: relative; overflow: hidden; }
