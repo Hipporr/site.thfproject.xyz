@@ -24,13 +24,17 @@
   <a href="#hero" class="wordmark nav-brand" aria-label="THFproject">
     <span class="p1">T</span><span class="p2">H</span><span class="p3">F</span><span class="p4">project</span>
   </a>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#features">Features</a></li>
-    <li><a href="#join">Join</a></li>
-    <li><a href="#rules-section">Rules</a></li>
-  </ul>
-  <a href="https://discord.gg/N7SWAkUjSs" target="_blank" rel="noopener" class="disc-btn">Discord</a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#join">Join</a></li>
+      <li><a href="#rules-section">Rules</a></li>
+    </ul>
+    <a href="https://discord.gg/N7SWAkUjSs" target="_blank" rel="noopener" class="nav-pill discord">Discord</a>
+    <a href="https://www.youtube.com/@THFPROJECT" target="_blank" rel="noopener" class="nav-pill youtube">YouTube</a>
+    <a href="https://ko-fi.com/zlopi_" target="_blank" rel="noopener" class="nav-pill donate">Support</a>
+  </div>
   <button id="burgerbtn" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </nav>
 
@@ -39,7 +43,9 @@
   <a href="#features">Features</a>
   <a href="#join">Join</a>
   <a href="#rules-section">Rules</a>
-  <a href="https://discord.gg/N7SWAkUjSs" target="_blank" rel="noopener" class="disc-btn">Discord</a>
+  <a href="https://discord.gg/N7SWAkUjSs" target="_blank" rel="noopener">Discord</a>
+  <a href="https://www.youtube.com/@THFPROJECT" target="_blank" rel="noopener">YouTube</a>
+  <a href="https://ko-fi.com/zlopi_" target="_blank" rel="noopener">Support</a>
 </div>
 
 <!-- HERO -->
@@ -55,6 +61,30 @@
       <span id="player-text">Checking server&hellip;</span>
     </div>
 
+    <div class="hero-cards">
+      <div class="hero-card">
+        <img
+          id="respawn-anchor-img"
+          class="respawn-img"
+          src="https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/respawn_anchor_top_off.png"
+          alt="Respawn Anchor"
+        />
+        <div class="hero-card-txt">
+          <p class="hc-sub">Random items</p>
+          <p class="hc-main">every<br>30 seconds</p>
+        </div>
+      </div>
+      <div class="hero-card">
+        <img class="end-ship-img" src="https://minecraft.wiki/images/End_ship.png" onerror="this.onerror=null;this.src='https://minecraft.wiki/images/End_Ship.png'" alt="End Ship" />
+        <div class="hero-card-txt">
+          <p class="hc-main">
+            VOID WORLD
+            <span class="under">and structures spawn</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
     <div class="server-box">
       <div class="srow" data-copy-text="thfproject.xyz" data-copy-label="Java IP copied!" role="button" tabindex="0">
         <span class="slabel">Java IP</span>
@@ -66,8 +96,8 @@
         <span class="sval">thfproject.xyz</span>
         <span class="sicon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>
       </div>
-      <div class="srow" data-copy-text="25597" data-copy-label="Port copied!" role="button" tabindex="0">
-        <span class="slabel">Port</span>
+      <div class="srow" data-copy-text="25597" data-copy-label="Bedrock port copied!" role="button" tabindex="0">
+        <span class="slabel">Bedrock Port</span>
         <span class="sval">25597</span>
         <span class="sicon"><svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></span>
       </div>
@@ -175,7 +205,7 @@
       <div class="join-card">
         <h3 class="join-card-head">Bedrock <span class="edition-tag">Bedrock Edition</span></h3>
         <div class="join-row"><span class="join-row-k">IP</span><span class="join-row-v">thfproject.xyz</span></div>
-        <div class="join-row"><span class="join-row-k">Port</span><span class="join-row-v">25597</span></div>
+        <div class="join-row"><span class="join-row-k">Bedrock Port</span><span class="join-row-v">25597</span></div>
         <div class="join-row"><span class="join-row-k">Platforms</span><span class="join-row-v">Mobile / Console / PC</span></div>
       </div>
     </div>

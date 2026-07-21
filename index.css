@@ -65,7 +65,7 @@ button { cursor: pointer; font-family: inherit; background: none; border: none; 
 .wordmark .p1 { color: var(--burn); }
 .wordmark .p2 { color: var(--grow); }
 .wordmark .p3 { color: var(--sky); }
-.wordmark .p4 { color: rgba(240,236,227,0.88); }
+.wordmark .p4 { color: #fff; }
 
 /* ─── NAVBAR ─── */
 #navbar {
@@ -83,6 +83,7 @@ button { cursor: pointer; font-family: inherit; background: none; border: none; 
 }
 .nav-brand { font-size: 0.85rem; letter-spacing: 0.02em; }
 .nav-brand .p4 { display: none; }
+.nav-right { display: flex; align-items: center; gap: 1rem; }
 .nav-links {
   display: flex; align-items: center; gap: 1.6rem; list-style: none;
 }
@@ -92,13 +93,21 @@ button { cursor: pointer; font-family: inherit; background: none; border: none; 
   transition: color 0.2s;
 }
 .nav-links a:hover { color: var(--paper); }
-.disc-btn {
-  background: #5865F2; color: #fff;
+.nav-pill {
   font-size: 0.48rem; letter-spacing: 0.02em;
-  padding: 0.5rem 0.9rem; border-radius: 2px; border: none;
-  transition: opacity 0.2s, transform 0.2s; cursor: pointer;
+  padding: 0.5rem 0.85rem; border-radius: 2px; border: none;
+  cursor: pointer; white-space: nowrap;
+  transition: opacity 0.2s, transform 0.2s;
 }
-.disc-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+.nav-pill:hover { opacity: 0.85; transform: translateY(-1px); }
+.nav-pill.discord { background: #5865F2; color: #fff; }
+.nav-pill.youtube { background: #FF0000; color: #fff; }
+.nav-pill.donate  { background: #f5c400; color: #000; }
+.nav-pill.donate:hover { background: #ffd700; opacity: 1; }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+}
 
 /* hamburger */
 #burgerbtn {
@@ -127,9 +136,8 @@ button { cursor: pointer; font-family: inherit; background: none; border: none; 
   color: var(--pale); padding: 0.35rem 0; transition: color 0.2s;
 }
 #mobnav a:hover { color: var(--paper); }
-#mobnav .disc-btn { width: fit-content; margin-top: 0.3rem; }
 @media (max-width: 767px) {
-  .nav-links { display: none; }
+  .nav-right .nav-pill { display: none; }
   #burgerbtn { display: flex; }
 }
 
@@ -140,6 +148,34 @@ button { cursor: pointer; font-family: inherit; background: none; border: none; 
   align-items: center; justify-content: center;
   text-align: center; padding: 100px 28px 80px;
 }
+
+/* ─── HERO CARDS (respawn anchor / end ship) ─── */
+.hero-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 14px; width: 100%; max-width: 640px;
+}
+.hero-card {
+  background: var(--fog); border-radius: var(--rnd);
+  padding: 20px 18px;
+  display: flex; align-items: center; gap: 14px;
+  text-align: left;
+  min-height: 118px;
+  border: 2px solid var(--hairline);
+}
+.respawn-img {
+  width: 64px; height: 64px; flex-shrink: 0;
+  image-rendering: pixelated; cursor: pointer;
+  transition: filter 0.1s;
+}
+.end-ship-img {
+  width: 90px; height: 66px; object-fit: contain; flex-shrink: 0;
+  image-rendering: pixelated;
+}
+.hero-card-txt { flex: 1; }
+.hc-sub { font-size: 0.4rem; color: var(--pale); margin-bottom: 8px; }
+.hc-main { font-size: 0.6rem; line-height: 1.7; }
+.hc-main .under { display: block; font-size: 0.42rem; color: rgba(240,236,227,0.7); margin-top: 6px; }
+@media (max-width: 640px) { .hero-cards { grid-template-columns: 1fr; } }
 
 #hero-content {
   display: flex; flex-direction: column;
@@ -191,7 +227,7 @@ button { cursor: pointer; font-family: inherit; background: none; border: none; 
 .srow:hover { background: rgba(255,255,255,0.04); }
 .slabel {
   font-size: 0.4rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--pale); flex-shrink: 0; width: 80px;
+  color: var(--pale); flex-shrink: 0; width: 96px;
 }
 .sval {
   font-size: 0.6rem; color: var(--paper); flex: 1; text-align: left;

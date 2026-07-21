@@ -367,23 +367,38 @@ class EasterEggs {
     }
   }
 
-  /** Click the "Item Drop" stat card 5x to watch a random item fall down the page. */
+  /** Click the respawn anchor 30x to watch a random item fall down the page. */
   #itemDrop() {
-    const card = qs('#sc2');
-    if (!card) return;
+    const anchor = qs('#respawn-anchor-img');
+    if (!anchor) return;
     const ITEMS = [
       'diamond', 'iron_ingot', 'gold_ingot', 'emerald', 'netherite_ingot',
-      'totem_of_undying', 'elytra', 'ender_pearl', 'tnt', 'gravel',
+      'apple', 'golden_apple', 'enchanted_golden_apple', 'bread', 'cooked_beef',
+      'bow', 'crossbow', 'trident', 'iron_sword', 'diamond_sword',
+      'tnt', 'obsidian', 'lava_bucket', 'ender_pearl', 'totem_of_undying',
+      'elytra', 'shulker_shell', 'blaze_rod', 'ghast_tear', 'dragon_breath',
+      'gravel', 'dirt', 'sand', 'cobblestone', 'stick',
     ];
-    const BASE       = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/';
-    const BLOCK_BASE = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/';
-    const BLOCK_ITEMS = ['tnt', 'gravel'];
+    const BASE        = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/item/';
+    const BLOCK_BASE  = 'https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/1.21/assets/minecraft/textures/block/';
+    const BLOCK_ITEMS = ['tnt', 'obsidian', 'gravel', 'dirt', 'sand', 'cobblestone'];
     let clicks = 0;
-    card.style.cursor = 'pointer';
+    anchor.title = '0 / 30';
 
-    card.addEventListener('click', () => {
-      if (++clicks < 5) return;
-      clicks = 0;
+    anchor.addEventListener('click', () => {
+      clicks++;
+      anchor.title = `${clicks} / 30`;
+      anchor.style.filter = 'brightness(2)';
+      setTimeout(() => { anchor.style.filter = ''; }, 120);
+
+      if (clicks >= 30) {
+        clicks = 0;
+        anchor.title = '0 / 30';
+        drop();
+      }
+    });
+
+    function drop() {
       const name = ITEMS[Math.floor(Math.random() * ITEMS.length)];
       const src  = (BLOCK_ITEMS.includes(name) ? BLOCK_BASE : BASE) + name + '.png';
 
@@ -391,7 +406,7 @@ class EasterEggs {
       el.src = src;
       el.style.cssText = `
         position:fixed; z-index:9999; pointer-events:none;
-        width:44px; height:44px; image-rendering:pixelated;
+        width:48px; height:48px; image-rendering:pixelated;
         left:${Math.random() * 80 + 10}vw; top:-60px;
         transition: top 2.2s cubic-bezier(.2,.8,.4,1), opacity .4s;
       `;
@@ -401,7 +416,7 @@ class EasterEggs {
         el.style.opacity = '0';
         setTimeout(() => el.remove(), 500);
       }, 2000);
-    });
+    }
   }
 
   /** Click the "Vanilla Structures" feature card 4x to raise an end city from behind it. */
